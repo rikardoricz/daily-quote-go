@@ -14,21 +14,22 @@ git clone https://github.com/rikardoricz/daily-quote-go
 ```sh
 cd daily-quote-go
 ```
+Choose your way of running the app:
 
-**run without building**
+- **run without building**
 ```sh
 go run ./cmd/main.go
 ```
 
-**build and run**
+- **or build and run**
 ```sh
 go build -o bin/app ./cmd && ./bin/app
 ```
 
-**or build and run container**
+- **or build and run container**
 ```sh
 docker build -t daily-quote-go:v0.1 -f build/Dockerfile . && docker run -p 8080:8080 daily-quote-go:v0.1
 ```
 
-3. Access [http://localhost:8080](http://localhost:8080)in browser
+3. Access [http://localhost:8080](http://localhost:8080) in browser
 
