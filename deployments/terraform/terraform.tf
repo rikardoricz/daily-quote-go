@@ -12,8 +12,8 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name = "tfstate-rg"
-    storage_account_name = "dailyquotetfstate"
+    resource_group_name = "rg-tfstate"
+    storage_account_name = "stdailyquotetfstate"
     container_name = "tfstate"
     key = "terraform.tfstate"
   }
