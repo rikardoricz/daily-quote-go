@@ -6,14 +6,14 @@ COPY go.mod ./
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o daily-quote-app .
+RUN CGO_ENABLED=0 GOOS=linux go build -o daily-quote-app ./cmd
 
 FROM alpine:3.14
 
 WORKDIR /app
 
 COPY --from=builder /build/daily-quote-app .
-COPY --from=builder /build/template ./template
+COPY --from=builder /build/web ./web
 
 RUN apk --no-cache add ca-certificates
 
