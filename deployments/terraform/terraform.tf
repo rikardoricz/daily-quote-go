@@ -6,15 +6,15 @@ terraform {
     }
 
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "~>3.0"
     }
   }
 
   backend "azurerm" {
-    resource_group_name = "rg-tfstate"
+    resource_group_name  = "rg-tfstate"
     storage_account_name = "stdailyquotetfstate"
-    container_name = "tfstate"
-    key = "terraform.tfstate"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
   }
 }
