@@ -11,16 +11,23 @@ Made basic setup on Azure to allow terraform to authenticate:
 6. Tested with terraform cli
 
 Current workflow:
+1. In `deployments/terraform/backend` run:
 ```sh
-# in deployments/terraform/tf-backend run:
 terraform init
 terraform plan
 terraform apply
-# this creates storage in Azure for storing tfstate file
-
-# in deployments/terraform run:
-terraform init
-terraform plan
-terraform apply
-# this provisions infra declared in deployments/terraform directory, uses Azure remote backend storage for tfstate
 ```
+This creates resource group, storage account and storage container for tfstate in Azure, and outputs variables to put in `deployments/terraform/environments/{prod|dev}/terraform.tf` and use as remote backend.
+
+2. Copy outputed values (resource_group_name,sorage_account_name, container_name) to backend block in `deployments/terraform/environments/{prod|dev}/terraform.tf`
+
+3. In `deployments/terraform/environments/{prod|dev}` run:
+
+```tf
+terraform init
+terraform plan
+terraform apply
+```
+this provisions infra and uses Azure remote backend storage for tfstate
+
+> Both prod and dev environments have their own tfstate file: `{dev|prod}.terraform.tfstate`
