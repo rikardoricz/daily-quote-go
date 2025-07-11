@@ -23,7 +23,7 @@ This creates resource group, storage account and storage container for tfstate i
 
 3. In `deployments/terraform/environments/{prod|dev}` run:
 
-```tf
+```sh
 terraform init
 terraform plan
 terraform apply

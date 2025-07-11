@@ -30,6 +30,12 @@ variable "address_space" {
   default     = ["10.0.0.0/16"]
 }
 
+variable "dns_servers" {
+  type = list(string)
+  description = "List of IP addresses of DNS servers"
+  default = ["10.0.0.4", "10.0.0.5"]
+}
+
 variable "subnet_name" {
   description = "Name of the subnet"
   type        = string
