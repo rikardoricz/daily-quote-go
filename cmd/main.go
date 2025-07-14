@@ -21,7 +21,7 @@ type PageData struct {
 }
 
 func main() {
-	tmpl, err := template.ParseFiles("./template/index.html")
+	tmpl, err := template.ParseFiles("web/template/index.html")
 	if err != nil {
 		log.Fatal("Error parsing template:", err)
 	}
