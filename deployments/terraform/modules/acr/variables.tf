@@ -16,12 +16,12 @@ variable "tags" {
 
 variable "acr_name" {
   description = "The name of the ACR"
-  type = string
+  type        = string
 }
 
 variable "acr_sku" {
   description = "SKU of the ACR"
-  type    = string
-  default = "Standard"
+  type        = string
+  default     = "Standard"
 }
 

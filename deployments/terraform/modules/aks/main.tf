@@ -6,13 +6,17 @@ resource "azurerm_kubernetes_cluster" "example" {
   node_resource_group = var.aks_nrg_name
 
   default_node_pool {
-    name           = var.default_node_pool_name
-    node_count     = var.node_count
-    vm_size        = var.vm_size
-    # vnet_subnet_id = var.subnet_id
-    os_disk_size_gb = var.os_disk_size_gb
-    node_public_ip_enabled = true
-    temporary_name_for_rotation = "tempdefault" 
+    name                        = var.default_node_pool_name
+    node_count                  = var.node_count
+    vm_size                     = var.vm_size
+    os_disk_size_gb             = var.os_disk_size_gb
+    node_public_ip_enabled      = true
+    temporary_name_for_rotation = "tempdefault"
+    auto_scaling_enabled        = true
+    min_count                   = 1
+    max_count                   = 3
+
+    vnet_subnet_id = var.subnet_id
   }
 
   identity {
@@ -21,13 +25,13 @@ resource "azurerm_kubernetes_cluster" "example" {
 
   role_based_access_control_enabled = true
 
+  network_profile {
+    network_plugin    = "azure"
+    network_policy    = "azure"
+    load_balancer_sku = "standard"
+    service_cidr      = var.network_cidr
+    dns_service_ip    = var.network_dns_ip
+  }
+
   tags = var.tags
 }
-
-# role assignment for aks acr pull
-# resource "azurerm_role_assignment" "example" {
-#   principal_id                     = azurerm_kubernetes_cluster.example.kubelet_identity[0].object_id
-#   role_definition_name             = "AcrPull"
-#   scope                            = azurerm_container_registry.example.id
-#   skip_service_principal_aad_check = true
-# }

@@ -44,7 +44,7 @@ variable "vm_size" {
 
 variable "os_disk_size_gb" {
   description = "The size of the vm disk size"
-  type        = string
+  type        = number
 }
 
 variable "subnet_id" {
@@ -58,4 +58,14 @@ variable "dns_prefix" {
   default     = "exampleaks1"
 }
 
+variable "network_dns_ip" {
+  description = "AKS network profile DNS service IP"
+  type        = string
+  default     = "10.0.0.10"
+}
 
+variable "network_cidr" {
+  description = "AKS network profile CIDR"
+  type        = string
+  default     = "10.0.0.0/16"
+}

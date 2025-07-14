@@ -23,12 +23,12 @@ output "subnet1_name" {
   value       = azurerm_subnet.subnet1.name
 }
 
-output "subnet2_id" {
-  description = "The ID of the subnet2"
-  value       = azurerm_subnet.subnet2.id
-}
+# output "subnet2_id" {
+#   description = "The ID of the subnet2"
+#   value       = azurerm_subnet.subnet2.id
+# }
 
-output "subnet2_name" {
-  description = "The name of the subnet2"
-  value       = azurerm_subnet.subnet2.name
-}
+# output "subnet2_name" {
+#   description = "The name of the subnet2"
+#   value       = azurerm_subnet.subnet2.name
+# }

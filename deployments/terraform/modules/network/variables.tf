@@ -24,24 +24,14 @@ variable "vnet_name" {
   type        = string
 }
 
-variable "address_space" {
-  type        = list(string)
-  description = "The address space used by the virtual network"
-  default     = ["10.0.0.0/16"]
-}
+# variable "address_space" {
+#   type        = list(string)
+#   description = "The address space used by the virtual network"
+#   default     = ["10.8.0.0/16"]
+# }
 
 variable "dns_servers" {
-  type = list(string)
-  description = "List of IP addresses of DNS servers"
-  default = ["10.0.0.4", "10.0.0.5"]
-}
-
-variable "subnet_name" {
-  description = "Name of the subnet"
-  type        = string
-}
-variable "subnet_address_prefixes" {
   type        = list(string)
-  description = "The address prefixes for the subnet"
-  default     = ["10.0.1.0/24"]
+  description = "List of IP addresses of DNS servers"
+  default     = ["10.8.0.4", "10.8.0.5"]
 }

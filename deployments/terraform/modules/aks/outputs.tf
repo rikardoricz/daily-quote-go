@@ -21,3 +21,7 @@ output "aks_cluster_name" {
 output "aks_cluster_kubernetes_version" {
   value = azurerm_kubernetes_cluster.example.kubernetes_version
 }
+
+output "aks_kubelet_identity_object_id" {
+  value = azurerm_kubernetes_cluster.example.kubelet_identity[0].object_id
+}
