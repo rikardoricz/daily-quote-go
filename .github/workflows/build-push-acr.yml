@@ -51,6 +51,7 @@ jobs:
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         
   deploy:
+    name: 'Deploy to AKS'
     needs: build
     runs-on: ubuntu-latest
     steps:    
@@ -83,5 +84,5 @@ jobs:
           manifests: |
              ./deployments/k8s/deployment.yml
              ./deployments/k8s/service.yml
-          images: '${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           pull-images: false 
