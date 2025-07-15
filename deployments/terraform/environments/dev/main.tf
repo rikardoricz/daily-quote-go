@@ -55,7 +55,7 @@ resource "azurerm_role_assignment" "example" {
   skip_service_principal_aad_check = true
 }
 
-module "helm" {
-  source     = "../../modules/helm"
-  depends_on = [module.aks]
-}
+# module "helm" {
+#   source     = "../../modules/helm"
+#   depends_on = [module.aks]
+# }
