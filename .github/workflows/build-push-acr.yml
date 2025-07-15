@@ -1,0 +1,31 @@
+name: "Azure Container Registry Build"
+on: 
+  workflow_dispatch:
+  push: # change later to trigger when code of app changes 
+
+jobs:
+  build:
+    name: 'Build and push to ACR'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker buildx build -f ./build/Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/daily-quote-go:${{ github.sha }} .
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/daily-quote-go:${{ github.sha }}
