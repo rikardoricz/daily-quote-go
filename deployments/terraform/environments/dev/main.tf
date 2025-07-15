@@ -56,5 +56,6 @@ resource "azurerm_role_assignment" "example" {
 }
 
 module "helm" {
-  source = "../../modules/helm" 
+  source     = "../../modules/helm"
+  depends_on = [module.aks]
 }

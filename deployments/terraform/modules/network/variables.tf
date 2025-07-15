@@ -30,8 +30,8 @@ variable "vnet_name" {
 #   default     = ["10.8.0.0/16"]
 # }
 
-variable "dns_servers" {
-  type        = list(string)
-  description = "List of IP addresses of DNS servers"
-  default     = ["10.8.0.4", "10.8.0.5"]
-}
+# variable "dns_servers" {
+#   type        = list(string)
+#   description = "List of IP addresses of DNS servers"
+#   default     = ["10.0.0.4", "10.0.0.5"]
+# }

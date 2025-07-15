@@ -58,14 +58,20 @@ variable "dns_prefix" {
   default     = "exampleaks1"
 }
 
+variable "network_service_cidr" {
+  description = "AKS network service CIDR"
+  type        = string
+  default     = "10.1.0.0/16"
+}
+
 variable "network_dns_ip" {
   description = "AKS network profile DNS service IP"
   type        = string
-  default     = "10.0.0.10"
+  default     = "10.1.0.10"
 }
 
-variable "network_cidr" {
-  description = "AKS network profile CIDR"
+variable "network_pod_cidr" {
+  description = "AKS network pod CIDR"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "10.240.0.0/16"
 }

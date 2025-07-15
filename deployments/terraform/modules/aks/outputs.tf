@@ -4,10 +4,14 @@ output "client_certificate" {
   sensitive   = true
 }
 
-output "kube_config" {
+output "kube_config_raw" {
   description = "Raw Kubernetes config to be used by kubectl and other compatible tools"
   value       = azurerm_kubernetes_cluster.example.kube_config_raw
   sensitive   = true
+}
+
+output "kube_config" {
+  value = azurerm_kubernetes_cluster.example.kube_config
 }
 
 output "aks_cluster_id" {
