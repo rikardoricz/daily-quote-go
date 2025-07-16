@@ -22,6 +22,7 @@ env:
 permissions:
    id-token: write
    contents: read
+   actions: read
 
 jobs:
   build:
@@ -85,4 +86,4 @@ jobs:
              ./deployments/k8s/deployment.yml
              ./deployments/k8s/service.yml
           images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          pull-images: false 
+          # pull-images: false 
