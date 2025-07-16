@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daily-quote-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: daily-quote-go
+  template:
+    metadata:
+      labels:
+        app: daily-quote-go
+    spec:
+      containers:
+      - name: daily-quote-go
+        image: acrdevdailyquote.azurecr.io/daily-quote-go
+        ports:
+        - containerPort: 8080
