@@ -92,4 +92,5 @@ jobs:
           namespace: 'default'
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          pull-images: false
         id: deploy-aks
