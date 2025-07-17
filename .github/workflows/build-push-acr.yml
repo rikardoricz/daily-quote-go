@@ -1,6 +1,6 @@
 name: "Azure Container Registry Build and Deploy to AKS"
 on: 
-  pull_request:
+  pull_request: # to be removed later as the pipeline is confirmed to work
     branches:
       - main
       - dev
@@ -17,7 +17,7 @@ on:
 env:
   IMAGE_NAME: daily-quote-go
   IMAGE_TAG: ${{ github.sha }}
-  
+  REGISTRY_LOGIN_SERVER: acrdevdailyquote.azurecr.io
 
 permissions:
    id-token: write
@@ -39,17 +39,19 @@ jobs:
       - name: Docker Login to ACR
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          login-server: ${{ env.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build Docker image
         run: |
-          docker buildx build -f ./build/Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
 
       - name: Push Docker image to ACR
         run: |
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
         
   deploy:
     name: 'Deploy to AKS'
@@ -72,18 +74,31 @@ jobs:
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
           cluster-name: ${{ secrets.CLUSTER_NAME }}
+        
+      - uses: Azure/k8s-create-secret@v4
+        with:
+          container-registry-url: ${{ env.REGISTRY_LOGIN_SERVER }}
+          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          secret-name: k8s-secret
 
-      - name: Setup kubectl
-        id: install-kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Configure deployment
+        uses: azure/k8s-bake@v3
+        with:
+          renderEngine: 'helm'
+          helmChart: './deployments/helm/daily-quote-go/'
+          overrides: |
+            replicas:2
+          helm-version: 'latest'
+          silent: 'false'
+        id: bake
 
       - name: Deploy to AKS
-        id: deploy-aks
         uses: Azure/k8s-deploy@v4
         with:
           namespace: 'default'
-          manifests: |
-             ./deployments/k8s/deployment.yml
-             ./deployments/k8s/service.yml
-          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          # pull-images: false 
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          imagepullsecrets: |
+            k8s-secret
+        id: deploy-aks
