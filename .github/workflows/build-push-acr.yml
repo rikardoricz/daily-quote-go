@@ -74,13 +74,6 @@ jobs:
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
           cluster-name: ${{ secrets.CLUSTER_NAME }}
-        
-      - uses: Azure/k8s-create-secret@v4
-        with:
-          container-registry-url: ${{ env.REGISTRY_LOGIN_SERVER }}
-          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          secret-name: k8s-secret
 
       - name: Configure deployment
         uses: azure/k8s-bake@v3
@@ -99,6 +92,4 @@ jobs:
           namespace: 'default'
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          imagepullsecrets: |
-            k8s-secret
         id: deploy-aks
