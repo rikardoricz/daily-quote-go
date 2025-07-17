@@ -8,7 +8,6 @@ app:
 
 image:
   repository: acrdevdailyquote.azurecr.io/daily-quote-go 
-  tag: "latest"
 
 service:
   type: LoadBalancer
