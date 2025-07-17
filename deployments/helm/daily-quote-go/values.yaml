@@ -8,7 +8,6 @@ app:
 
 image:
   repository: acrdevdailyquote.azurecr.io/daily-quote-go 
-  pullPolicy: IfNotPresent
   tag: "latest"
 
 service:
