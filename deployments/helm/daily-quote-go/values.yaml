@@ -1,0 +1,16 @@
+replicaCount: 1
+
+namespace: default
+
+app:
+  name: daily-quote-go
+  chart: daily-quote-go-chart
+
+image:
+  repository: acrdevdailyquote.azurecr.io/daily-quote-go 
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: LoadBalancer
+  port: 80
