@@ -8,13 +8,6 @@ Return the name of the application
 {{/*
 Return the chart version.
 */}}
-{{- define "mongodb.chart" -}}
+{{- define "daily-quote-go.chart" -}}
 {{- printf "%s-%s" .Values.app.chart .Chart.Version -}}
-{{- end -}}
-
-{{/*
-Return the Serviceaccount name.
-*/}}
-{{- define "mongodb.serviceAccountName" -}}
-{{- default  .Values.serviceAccount.name  -}}
 {{- end -}}

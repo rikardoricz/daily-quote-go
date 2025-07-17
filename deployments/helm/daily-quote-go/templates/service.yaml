@@ -8,10 +8,10 @@ metadata:
     chart: {{ include "daily-quote-go.chart" . }}
     release: {{ .Release.Name }}
 spec:
-  type: {{ Values.service.type }}
+  type: {{ .Values.service.type }}
   ports:
     - name: http
-      port: {{ .Values.service.port}}
+      port: {{ .Values.service.port }}
       targetPort: 8080
       protocol: TCP
   selector:
