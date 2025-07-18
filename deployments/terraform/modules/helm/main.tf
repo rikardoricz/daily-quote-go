@@ -1,14 +1,17 @@
-resource "helm_release" "nginx_ingress" {
-  name       = "nginx-ingress-controller"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx-ingress-controller"
 
-  set = [{
-    name  = "service.type"
-    value = "LoadBalancer"
-  }]
-
-  namespace        = "ingress-nginx"
+resource "helm_release" "kube-prometheus" {
+  name             = "kube-prometheus-stack"
+  repository       = "https://prometheus-community.github.io/helm-charts"
+  chart            = "kube-prometheus-stack"
+  namespace        = "monitoring"
   create_namespace = true
+  timeout          = 2000
   wait             = false
+
+  set = [
+    {
+      name  = "prometheus.prometheusSpec.maximumStartupDurationSeconds"
+      value = "300"
+    }
+  ]
 }
