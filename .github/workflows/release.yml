@@ -66,11 +66,14 @@ jobs:
         id: deploy-aks
       
       - name: Generate Changelog
-        run: echo "# Good things have arrived" > CHANGELOG.md
+        run: |
+          echo "# Good things have arrived" > CHANGELOG.md
+          echo "## v${VERSION}"
       
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: CHANGELOG.md
+          tag_name: "v${{ env.VERSION }}"
+          body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
