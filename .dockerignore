@@ -1,0 +1,12 @@
+bin/
+
+.git/
+.gitignore
+
+*.env
+
+.vscode
+
+deployments/
+
+README.md
