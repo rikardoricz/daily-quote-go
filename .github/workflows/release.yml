@@ -64,3 +64,13 @@ jobs:
           images: ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
           pull-images: false
         id: deploy-aks
+      
+      - name: Generate Changelog
+        run: echo "# Good things have arrived" > CHANGELOG.md
+      
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
