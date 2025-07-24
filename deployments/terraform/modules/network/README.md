@@ -7,8 +7,8 @@ This module creates a network security group (NSG), a virtual network (VNET) and
 ```tf
 module "network" {
   source                  = "../../modules/network"
-  resource_group_name     = "resource-group-name
-  location                = "polandcentral
+  resource_group_name     = "resource-group-name"
+  location                = "polandcentral"
   nsg_name                = "nsg-name"
   vnet_name               = "vnet-name"
   subnet_name             = "snet-name"

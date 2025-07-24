@@ -1,0 +1,65 @@
+name: "Azure Container Registry Build"
+on: 
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+      - dev # remove later
+    paths:
+      - 'build/**'
+      - 'cmd/**'
+      - 'web/**'
+
+env:
+  IMAGE_NAME: daily-quote-go
+  IMAGE_TAG: ${{ github.sha }}
+  REGISTRY_LOGIN_SERVER: acrdevdailyquote.azurecr.io
+
+permissions:
+   id-token: write
+   contents: write
+   actions: read
+
+jobs:
+  build:
+    name: 'Build and push to ACR'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set version
+        run: |
+          echo "VERSION=0.1.1" >> $GITHUB_ENV 
+
+      - name: Docker Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} .
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Create GitHub Tag
+        run: |
+          git tag "v${{ env.VERSION }}"
+          git push origin --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
