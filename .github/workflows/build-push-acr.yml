@@ -1,6 +1,9 @@
 name: "Azure Container Registry Build"
 on: 
   workflow_dispatch: # to be deleted later I guess
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -57,7 +60,5 @@ jobs:
 
       - name: Create GitHub Tag
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            git tag "v${{ env.VERSION }}"
-            git push origin --tags
-          fi
+          git tag "v${{ env.VERSION }}"
+          git push origin --tags
