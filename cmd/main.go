@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/rikardoricz/daily-quote-go/version"
 )
 
 type Quote struct {
@@ -15,9 +17,10 @@ type Quote struct {
 }
 
 type PageData struct {
-	Quote  Quote
-	Error  string
-	HasNew bool
+	Quote   Quote
+	Error   string
+	HasNew  bool
+	Version string
 }
 
 func main() {
@@ -27,7 +30,9 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		data := PageData{}
+		data := PageData{
+			Version: version.VERSION,
+		}
 
 		if r.URL.Query().Get("new") == "true" {
 			data.HasNew = true

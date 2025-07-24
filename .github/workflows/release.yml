@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  IMAGE_NAME: daily-quote-go
+  REGISTRY_LOGIN_SERVER: acrdevdailyquote.azurecr.io
+
+permissions:
+   id-token: write
+   contents: write
+   actions: read
+
+jobs:
+  deploy:
+    name: 'Deploy to AKS'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:    
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: set-version
+        run: |
+          tag_name="${GITHUB_REF#refs/tags/}"       # v0.1.0
+          version="${tag_name#v}"                   # 0.1.0
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+
+      - name: Configure deployment
+        uses: azure/k8s-bake@v3
+        with:
+          renderEngine: 'helm'
+          helmChart: './deployments/helm/daily-quote-go/'
+          overrides: |
+            replicas:2
+          helm-version: 'latest'
+          silent: 'false'
+        id: bake
+
+      - name: Deploy to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          pull-images: false
+        id: deploy-aks
+      
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ env.VERSION }}"
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
