@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - dev # remove later
     paths:
       - 'build/**'
       - 'cmd/**'
@@ -14,7 +13,6 @@ on:
 
 env:
   IMAGE_NAME: daily-quote-go
-  IMAGE_TAG: ${{ github.sha }}
   REGISTRY_LOGIN_SERVER: acrdevdailyquote.azurecr.io
 
 permissions:
@@ -41,26 +39,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Read and increment patch version
+      - name: Get the version
         id: version
         run: |
           RAW_VERSION=$(grep -oP 'VERSION = "\K[0-9]+\.[0-9]+\.[0-9]+' version/version.go)
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$RAW_VERSION"
-          PATCH=$((PATCH + 1))
-          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "VERSION=${RAW_VERSION}" >> $GITHUB_ENV
+          echo "Detected version $RAW_VERSION"
 
-          echo "package version" > version/version.go
-          echo "" >> version/version.go
-          echo "var VERSION = \"${NEW_VERSION}\"" >> version/version.go
-
-          echo "VERSION=${NEW_VERSION}" >> $GITHUB_ENV
-
-      - name: Commit updated version
-        run: |
-          git add version/version.go
-          git commit -m "chore: bump patch to v${VERSION}"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }} HEAD:main
-
+      # - name: Commit updated version
+      #   run: |
+      #     git add version/version.go
+      #     git commit -m "chore: bump patch to v${VERSION}"
+      #     git push 
 
       - name: Docker Login to ACR
         uses: azure/docker-login@v1
