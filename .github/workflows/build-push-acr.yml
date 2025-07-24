@@ -1,6 +1,10 @@
 name: "Azure Container Registry Build"
 on: 
   workflow_dispatch: # to be deleted later I guess
+  pull_request:
+    branches:
+      - main
+      - dev # remove later
   push:
     branches:
       - main
