@@ -38,7 +38,7 @@ jobs:
 
       - name: Set version
         run: |
-          echo "VERSION=0.1.2" >> $GITHUB_ENV 
+          echo "VERSION=0.1.3" >> $GITHUB_ENV 
 
       - name: Docker Login to ACR
         uses: azure/docker-login@v1
