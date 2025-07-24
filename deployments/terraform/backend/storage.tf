@@ -4,7 +4,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "tfstate" {
   location = "polandcentral"
-  name     = "rg-tfstate" 
+  name     = "rg-tfstate"
 }
 
 resource "azurerm_storage_account" "tfstate" {
