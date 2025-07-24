@@ -7,7 +7,6 @@ on:
 
 env:
   IMAGE_NAME: daily-quote-go
-  IMAGE_TAG: ${{ github.sha }}
   REGISTRY_LOGIN_SERVER: acrdevdailyquote.azurecr.io
 
 permissions:
@@ -65,15 +64,10 @@ jobs:
           pull-images: false
         id: deploy-aks
       
-      - name: Generate Changelog
-        run: |
-          echo "# Good things have arrived" > CHANGELOG.md
-          echo "## v${VERSION}"
-      
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ env.VERSION }}"
-          body_path: CHANGELOG.md
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
