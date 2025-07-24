@@ -13,3 +13,4 @@ jobs:
       with:
         repo-token: ${{ secrets.GH_PAT }}
         configuration-path: .github/labeler.yml
+
