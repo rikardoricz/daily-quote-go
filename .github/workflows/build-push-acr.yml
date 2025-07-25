@@ -1,0 +1,75 @@
+name: "Azure Container Registry Build"
+on: 
+  # pull_request:
+  #   branches:
+  #     - main
+  push:
+    branches:
+      - main
+    paths:
+      - 'build/**'
+      - 'cmd/**'
+      - 'web/**'
+
+env:
+  IMAGE_NAME: daily-quote-go
+  REGISTRY_LOGIN_SERVER: acrdevdailyquote.azurecr.io
+
+permissions:
+   id-token: write
+   contents: write
+   actions: read
+
+jobs:
+  build:
+    name: 'Build and push to ACR'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get the version
+        id: version
+        run: |
+          RAW_VERSION=$(grep -oP 'VERSION = "\K[0-9]+\.[0-9]+\.[0-9]+' version/version.go)
+          echo "VERSION=${RAW_VERSION}" >> $GITHUB_ENV
+          echo "Detected version $RAW_VERSION"
+
+      # - name: Commit updated version
+      #   run: |
+      #     git add version/version.go
+      #     git commit -m "chore: bump patch to v${VERSION}"
+      #     git push 
+
+      - name: Docker Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} .
+          docker buildx build -f ./build/Dockerfile -t ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          docker push ${{ env.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Create GitHub Tag
+        run: |
+          git tag "v${{ env.VERSION }}"
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }} "v${{ env.VERSION }}"

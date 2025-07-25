@@ -19,6 +19,11 @@ variable "aks_name" {
   type        = string
 }
 
+variable "aks_nrg_name" {
+  description = "Name of the AKS node resource group"
+  type        = string
+}
+
 variable "default_node_pool_name" {
   description = "Name of default pool node of AKS"
   type        = string
@@ -37,17 +42,36 @@ variable "vm_size" {
   default     = "Standard_B2ls_v2"
 }
 
+variable "os_disk_size_gb" {
+  description = "The size of the vm disk size"
+  type        = number
+}
+
+variable "subnet_id" {
+  description = "The ID of the subnet where the Kubernetes node pool should exist"
+  type        = string
+}
+
 variable "dns_prefix" {
   description = "Prefix of the DNS"
   type        = string
   default     = "exampleaks1"
 }
 
-variable "acr_name" {
-  type = string
-}
-variable "acr_sku" {
-  type    = string
-  default = "Standard"
+variable "network_service_cidr" {
+  description = "AKS network service CIDR"
+  type        = string
+  default     = "10.1.0.0/16"
 }
 
+variable "network_dns_ip" {
+  description = "AKS network profile DNS service IP"
+  type        = string
+  default     = "10.1.0.10"
+}
+
+variable "network_pod_cidr" {
+  description = "AKS network pod CIDR"
+  type        = string
+  default     = "10.240.0.0/16"
+}

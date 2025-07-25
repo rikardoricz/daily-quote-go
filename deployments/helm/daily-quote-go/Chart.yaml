@@ -1,0 +1,11 @@
+apiVersion: v2
+name: daily-quote-go
+version: 0.0.1
+appVersion: 0.2.1
+description: A Helm chart for daily-quote-go app
+keywords:
+  - app
+maintainers:
+  - name: rikardoricz
+    email: rikardoricz@gmail.com
+type: application

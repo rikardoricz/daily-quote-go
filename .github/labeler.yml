@@ -1,0 +1,14 @@
+Documentation:
+- changed-files:
+  - any-glob-to-any-file: '**/*.md'
+  - any-glob-to-any-file: docs/**
+
+feature:
+  - head-branch: ['^feat', 'feat']
+
+bug:
+  - head-branch: ['^fix', 'fix']
+
+chore:
+- changed-files:
+  - any-glob-to-any-file: '.github/**'
