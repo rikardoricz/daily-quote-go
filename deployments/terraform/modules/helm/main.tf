@@ -15,3 +15,32 @@ resource "helm_release" "kube-prometheus" {
     }
   ]
 }
+
+resource "helm_release" "nginx_ingress" {
+  name             = "ingress-nginx"
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = "ingress-nginx"
+  create_namespace = true
+  wait             = true
+
+
+  set = [
+    {
+      name  = "controller.service.type"
+      value = "LoadBalancer"
+    },
+    {
+      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-health-probe-request-path"
+      value = "/healthz"
+    },
+    {
+      name  = "controller.metrics.enabled"
+      value = "true"
+    },
+    # {
+    #   name  = "controller.replicaCount"
+    #   value = "2"
+    # }
+  ]
+}
