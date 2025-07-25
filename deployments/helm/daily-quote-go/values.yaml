@@ -10,5 +10,9 @@ image:
   repository: acrdevdailyquote.azurecr.io/daily-quote-go 
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
+
+ingress:
+  enabled: true
+  host: rikardo.zip
