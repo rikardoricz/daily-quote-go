@@ -39,18 +39,18 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
-      working-directory: deployments/terraform/dev
+      working-directory: deployments/terraform/environments/dev
 
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
     - name: Terraform Format
       run: terraform fmt -check
-      working-directory: deployments/terraform/dev
+      working-directory: deployments/terraform/environments/dev
 
     # Generates an execution plan for Terraform
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
-      working-directory: deployments/terraform/dev
+      working-directory: deployments/terraform/environments/dev
       id: tf-plan
       run: |
         export exitcode=0
@@ -70,7 +70,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tfplan
-        path: deployments/terraform/dev/tfplan
+        path: deployments/terraform/environments/dev/tfplan
 
     # Create string output of Terraform Plan
     - name: Create String Output
@@ -115,19 +115,19 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
-      working-directory: deployments/terraform/dev
+      working-directory: deployments/terraform/environments/dev
 
     # Download saved plan from artifacts  
     - name: Download Terraform Plan
       uses: actions/download-artifact@v4
       with:
         name: tfplan
-        path: deployments/terraform/dev
+        path: deployments/terraform/environments/dev
 
     # Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
-      working-directory: deployments/terraform/dev
+      working-directory: deployments/terraform/environments/dev
 
   configure-aks:
     name: 'Configure AKS'
