@@ -44,15 +44,15 @@ spec:
       interval: 1m
     # testing (optional)
     webhooks:
-      - name: acceptance-test
-        type: pre-rollout
-        url: http://flagger-loadtester.default/
-        timeout: 30s
-        metadata:
-          type: bash
-          cmd: "curl -sd 'test' http://daily-quote-go-canary/token | grep token"
+      # - name: acceptance-test
+      #   type: pre-rollout
+      #   url: http://flagger-loadtester.default/
+      #   timeout: 30s
+      #   metadata:
+      #     type: bash
+      #     cmd: "curl -sd 'test' http://daily-quote-go-canary/token | grep token"
       - name: load-test
         url: http://flagger-loadtester.default/
         timeout: 5s
         metadata:
-          cmd: "hey -z 1m -q 10 -c 2 http://daily-quote-go-canary.default/"
+          cmd: "hey -z 1m -q 10 -c 2 http://rikardo.zip/"
