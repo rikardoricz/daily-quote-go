@@ -153,6 +153,7 @@ jobs:
         run: |
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo add flagger https://flagger.app
+          helm repo add jenkins https://charts.jenkins.io
           helm repo update
 
       - name: Enable Prometheus metrics on ingress-nginx
@@ -195,3 +196,12 @@ jobs:
       - name: Apply Canary config
         run: |
           kubectl apply -f ./deployments/k8s/canary.yaml
+
+      - name: Install Jenkins via Helm
+        run: |
+          helm upgrade --install jenkins jenkins/jenkins \
+            --namespace jenkins \
+            --create-namespace \
+            --set controller.adminPassword=admin \
+            --set controller.service.type=servicePort \
+            --set controller.persistence.enabled=false
