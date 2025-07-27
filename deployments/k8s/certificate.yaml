@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: daily-quote-go-cert
+  namespace: default
+spec:
+  secretName: daily-quote-go-tls
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - 'rikardo.zip'
