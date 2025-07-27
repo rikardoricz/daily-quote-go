@@ -44,3 +44,23 @@ resource "helm_release" "nginx_ingress" {
     # }
   ]
 }
+
+resource "helm_release" "cert-manager" {
+  name             = "cert-manager"
+  chart            = "cert-manager"
+  repository       = "https://charts.jetstack.io"
+  version          = "v1.18.2"
+  namespace        = "cert-manager"
+  create_namespace = true
+
+  set = [
+    {
+      name  = "prometheus.enabled"
+      value = "true"
+    },
+    {
+      name  = "crds.enabled"
+      value = "true"
+    }
+  ]
+}
