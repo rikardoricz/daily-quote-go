@@ -187,9 +187,16 @@ jobs:
 
       - name: Create Cloudflare API Secret in Cluster
         run: |
-          kubectl create secret generic cloudflare-api-token-secret \
-            --namespace cert-manager \
-            --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }}
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: cloudflare-api-token-secret
+            namespace: cert-manager
+          type: Opaque
+          stringData:
+            api-token: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          EOF
 
       - name: Apply cert-manager resources
         run: |
