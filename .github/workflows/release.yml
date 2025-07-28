@@ -64,6 +64,10 @@ jobs:
           pull-images: false
         id: deploy-aks
 
+      - name: Reapply ingress resource
+        run: |
+          kubectl apply -f ./deployments/k8s/ingress.yaml
+
       - name: Build binary
         run: |
           mkdir -p bin
