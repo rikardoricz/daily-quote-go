@@ -210,6 +210,6 @@ jobs:
           helm upgrade --install jenkins jenkins/jenkins \
             --namespace jenkins \
             --create-namespace \
-            --set controller.adminPassword=admin \
+            --set controller.admin.password=${{ secrets.JENKINS_PASSWORD }} \
             --set controller.service.type=servicePort \
             --set controller.persistence.enabled=false
