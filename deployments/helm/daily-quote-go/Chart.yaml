@@ -1,7 +1,7 @@
 apiVersion: v2
 name: daily-quote-go
 version: 0.0.2
-appVersion: 0.2.5
+appVersion: 0.2.6
 description: A Helm chart for daily-quote-go app
 keywords:
   - app
