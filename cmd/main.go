@@ -74,7 +74,9 @@ func fetchQuote() (Quote, error) {
 	if err != nil {
 		return Quote{}, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return Quote{}, fmt.Errorf("API returned status code: %d", resp.StatusCode)
