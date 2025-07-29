@@ -23,6 +23,12 @@ type PageData struct {
 	Version string
 }
 
+var (
+	lastQuote   Quote
+	lastFetched time.Time
+	cacheTTL    = 1 * time.Minute
+)
+
 func main() {
 	tmpl, err := template.ParseFiles("web/template/index.html")
 	if err != nil {
@@ -56,6 +62,10 @@ func main() {
 }
 
 func fetchQuote() (Quote, error) {
+	if time.Since(lastFetched) < cacheTTL && lastQuote.Content != "" {
+		return lastQuote, nil
+	}
+
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
@@ -82,5 +92,7 @@ func fetchQuote() (Quote, error) {
 		return Quote{}, fmt.Errorf("no quotes returned from API")
 	}
 
-	return quotes[0], nil
+	lastQuote = quotes[0]
+	lastFetched = time.Now()
+	return lastQuote, nil
 }
